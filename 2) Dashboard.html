@@ -1,0 +1,2533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printerest - Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="ICON.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #054089;
+            --primary-light: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary-color: #f8fafc;
+            --accent-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            --sidebar-width: 320px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--secondary-color);
+            overflow-x: hidden;
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            color: white;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1100;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            min-width: 48px;
+            min-height: 48px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .mobile-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+
+        .mobile-overlay.show {
+            display: block;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+            z-index: 1000;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-logo:hover {
+            transform: scale(1.02);
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .sidebar-logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .sidebar-close {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .sidebar-close:hover {
+            background: var(--secondary-color);
+            color: var(--text-primary);
+        }
+
+        .sidebar-nav {
+            padding: 1rem;
+            flex: 1;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem 1rem;
+            border-radius: 0.75rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            min-height: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            opacity: 1;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: white;
+            transform: translateX(4px);
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.125rem;
+        }
+
+        .sidebar-user {
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            background: white;
+            flex-shrink: 0;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.875rem;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            min-height: 64px;
+        }
+
+        .user-profile:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .user-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.125rem;
+            box-shadow: var(--shadow-md);
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .wallet-display {
+            background: linear-gradient(135deg, var(--accent-color), #059669);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .wallet-display:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .wallet-title {
+            font-size: 0.8rem;
+            font-weight: 500;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .wallet-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.875rem;
+            background: transparent;
+            border: 2px solid var(--error-color);
+            border-radius: 0.75rem;
+            color: var(--error-color);
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            min-height: 48px;
+        }
+
+        .logout-btn:hover {
+            background: var(--error-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .content-wrapper {
+            padding: 1.5rem;
+            max-width: none;
+            margin: 0;
+        }
+
+        .welcome-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .welcome-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .welcome-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-section p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .quick-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.875rem 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0.75rem;
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            min-height: 48px;
+        }
+
+        .quick-action:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-title i {
+            color: var(--primary-color);
+            font-size: 1.25rem;
+        }
+
+        .profile-card {
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin: 0 auto 1rem;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+
+        .profile-avatar:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-email {
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            word-break: break-word;
+            font-size: 0.9rem;
+        }
+
+        .profile-id {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 1rem;
+            background: var(--secondary-color);
+            border-radius: 0.75rem;
+            transition: all 0.3s ease;
+        }
+
+        .stat:hover {
+            background: #f1f5f9;
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
+        }
+
+        /* Enhanced Table Styles for Zoomed Out View */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            background: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .print-jobs-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 0.75rem;
+            min-width: 1200px;
+        }
+
+        .print-jobs-table th,
+        .print-jobs-table td {
+            padding: 0.75rem 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        .print-jobs-table th {
+            background: var(--secondary-color);
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .print-jobs-table td {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        .print-jobs-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .print-jobs-table tbody tr:hover {
+            background: rgba(5, 64, 137, 0.03);
+            transform: scale(1.005);
+        }
+
+        .print-jobs-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Responsive column widths for better data visibility - Updated for 8 columns */
+        .print-jobs-table th:nth-child(1),
+        .print-jobs-table td:nth-child(1) {
+            width: 12%;
+            min-width: 100px;
+        }
+
+        .print-jobs-table th:nth-child(2),
+        .print-jobs-table td:nth-child(2) {
+            width: 18%;
+            min-width: 130px;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .print-jobs-table th:nth-child(3),
+        .print-jobs-table td:nth-child(3) {
+            width: 12%;
+            min-width: 90px;
+        }
+
+        .print-jobs-table th:nth-child(4),
+        .print-jobs-table td:nth-child(4) {
+            width: 20%;
+            min-width: 150px;
+        }
+
+        .print-jobs-table th:nth-child(5),
+        .print-jobs-table td:nth-child(5) {
+            width: 10%;
+            min-width: 80px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .print-jobs-table th:nth-child(6),
+        .print-jobs-table td:nth-child(6) {
+            width: 15%;
+            min-width: 120px;
+        }
+
+        .print-jobs-table th:nth-child(7),
+        .print-jobs-table td:nth-child(7) {
+            width: 10%;
+            min-width: 80px;
+        }
+
+        .print-jobs-table th:nth-child(8),
+        .print-jobs-table td:nth-child(8) {
+            width: 13%;
+            min-width: 100px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 1rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .status-badge:hover {
+            transform: scale(1.05);
+        }
+
+        .status-badge.completed,
+        .status-badge.epaid {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-badge.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning-color);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-badge.processing {
+            background: rgba(5, 64, 137, 0.15);
+            color: var(--primary-color);
+            border: 1px solid rgba(5, 64, 137, 0.3);
+        }
+
+        .file-url {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-url a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            font-size: 0.7rem;
+        }
+
+        .file-url a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        .loading-state,
+        .empty-state,
+        .error-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-secondary);
+        }
+
+        .loading-state .spinner {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--border-color);
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        .empty-state i,
+        .error-state i {
+            font-size: 2.5rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3,
+        .error-state h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            line-height: 1.5;
+            min-height: 44px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--secondary-color);
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1500;
+            padding: 1rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 500px;
+            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            min-width: 40px;
+            min-height: 40px;
+        }
+
+        .modal-close:hover {
+            background: var(--secondary-color);
+            color: var(--text-primary);
+        }
+
+        .logout-modal {
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .logout-modal-icon {
+            width: 70px;
+            height: 70px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.25rem;
+            font-size: 1.75rem;
+            color: var(--error-color);
+            border: 2px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .logout-modal h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .logout-modal p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(5, 64, 137, 0.1);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Toast Styles */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: var(--shadow-lg);
+            padding: 1rem 1.25rem;
+            border-left: 4px solid;
+            animation: slideInRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            max-width: 320px;
+            min-width: 280px;
+        }
+
+        .toast.success {
+            border-left-color: var(--accent-color);
+        }
+
+        .toast.error {
+            border-left-color: var(--error-color);
+        }
+
+        .toast i {
+            font-size: 1.125rem;
+        }
+
+        .toast.success i {
+            color: var(--accent-color);
+        }
+
+        .toast.error i {
+            color: var(--error-color);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive Design */
+        
+        /* Large Desktop */
+        @media (min-width: 1400px) {
+            .content-wrapper {
+                padding: 2rem;
+            }
+            
+            .welcome-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .dashboard-grid {
+                gap: 2rem;
+            }
+            
+            .card {
+                padding: 2rem;
+            }
+
+            .print-jobs-table {
+                font-size: 0.8rem;
+            }
+
+            .print-jobs-table th,
+            .print-jobs-table td {
+                padding: 1rem 0.75rem;
+            }
+        }
+
+        /* Desktop */
+        @media (max-width: 1200px) {
+            :root {
+                --sidebar-width: 280px;
+            }
+            
+            .content-wrapper {
+                padding: 1.25rem;
+            }
+            
+            .welcome-section {
+                padding: 1.75rem;
+            }
+            
+            .dashboard-grid {
+                gap: 1.25rem;
+            }
+
+            .print-jobs-table {
+                min-width: 1000px;
+            }
+        }
+
+        /* Tablet */
+        @media (max-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1.25rem;
+            }
+            
+            .welcome-section h1 {
+                font-size: 1.75rem;
+            }
+            
+            .welcome-section p {
+                font-size: 0.95rem;
+            }
+            
+            .card {
+                padding: 1.25rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            
+            .profile-stats {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+
+            .print-jobs-table {
+                min-width: 900px;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 100%;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .sidebar {
+                transform: translateX(-100%);
+                width: 100%;
+                max-width: 320px;
+                z-index: 1100;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .sidebar-close {
+                display: block;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding-top: 4.5rem;
+            }
+            
+            .content-wrapper {
+                padding: 1rem;
+            }
+            
+            .welcome-section {
+                padding: 1.5rem;
+                margin-bottom: 1.25rem;
+                border-radius: 0.75rem;
+            }
+            
+            .welcome-section h1 {
+                font-size: 1.5rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .welcome-section p {
+                font-size: 0.9rem;
+                margin-bottom: 1.25rem;
+            }
+            
+            .card {
+                padding: 1rem;
+                border-radius: 0.75rem;
+            }
+            
+            .card-title {
+                font-size: 1rem;
+            }
+            
+            .profile-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+            
+            .quick-actions {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.75rem;
+            }
+            
+            .quick-action {
+                width: 100%;
+                max-width: 280px;
+                justify-content: center;
+                padding: 1rem 1.25rem;
+            }
+            
+            .modal {
+                margin: 1rem;
+                padding: 1.25rem;
+                max-width: calc(100% - 2rem);
+            }
+            
+            .modal-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .table-container {
+                border-radius: 0.5rem;
+                margin: 0 -0.5rem;
+            }
+            
+            .print-jobs-table {
+                min-width: 800px;
+                font-size: 0.7rem;
+            }
+            
+            .print-jobs-table th,
+            .print-jobs-table td {
+                padding: 0.5rem 0.25rem;
+            }
+            
+            .status-badge {
+                font-size: 0.6rem;
+                padding: 0.2rem 0.4rem;
+            }
+            
+            .file-url {
+                max-width: 120px;
+                font-size: 0.6rem;
+            }
+            
+            .toast-container {
+                top: 5rem;
+                right: 1rem;
+                left: 1rem;
+            }
+            
+            .toast {
+                min-width: auto;
+                max-width: none;
+            }
+        }
+
+        /* Small Mobile */
+        @media (max-width: 480px) {
+            .mobile-menu-toggle {
+                top: 0.75rem;
+                left: 0.75rem;
+                padding: 0.5rem;
+                font-size: 1.25rem;
+            }
+            
+            .main-content {
+                padding-top: 4rem;
+            }
+            
+            .content-wrapper {
+                padding: 0.75rem;
+            }
+            
+            .welcome-section {
+                padding: 1.25rem 1rem;
+                margin-bottom: 1rem;
+            }
+            
+            .welcome-section h1 {
+                font-size: 1.375rem;
+                line-height: 1.3;
+            }
+            
+            .welcome-section p {
+                font-size: 0.875rem;
+                line-height: 1.5;
+            }
+            
+            .card {
+                padding: 0.875rem;
+                border-radius: 0.5rem;
+            }
+            
+            .card-title {
+                font-size: 0.95rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+            
+            .profile-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+            
+            .profile-name {
+                font-size: 1rem;
+            }
+            
+            .profile-email {
+                font-size: 0.8rem;
+            }
+            
+            .sidebar {
+                max-width: 280px;
+            }
+            
+            .sidebar-header {
+                padding: 1rem;
+            }
+            
+            .sidebar-logo-text {
+                font-size: 1.25rem;
+            }
+            
+            .sidebar-logo-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+            
+            .nav-link {
+                padding: 0.75rem;
+                font-size: 0.875rem;
+            }
+            
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 0.95rem;
+            }
+            
+            .user-name {
+                font-size: 0.8rem;
+            }
+            
+            .user-role {
+                font-size: 0.7rem;
+            }
+            
+            .wallet-amount {
+                font-size: 1.125rem;
+            }
+            
+            .logout-btn {
+                padding: 0.75rem;
+                font-size: 0.8rem;
+            }
+
+            .print-jobs-table {
+                min-width: 700px;
+                font-size: 0.65rem;
+            }
+            
+            .quick-action {
+                padding: 0.75rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .table-container {
+                margin: 0 -0.75rem;
+            }
+        }
+
+        /* Extra Small Mobile */
+        @media (max-width: 360px) {
+            .content-wrapper {
+                padding: 0.5rem;
+            }
+            
+            .welcome-section {
+                padding: 1rem 0.75rem;
+            }
+            
+            .welcome-section h1 {
+                font-size: 1.25rem;
+            }
+            
+            .card {
+                padding: 0.75rem;
+            }
+            
+            .sidebar {
+                max-width: 260px;
+            }
+            
+            .print-jobs-table {
+                min-width: 600px;
+                font-size: 0.65rem;
+            }
+            
+            .quick-action {
+                padding: 0.75rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .table-container {
+                margin: 0 -0.5rem;
+            }
+        }
+
+        /* Smallest Mobile */
+        @media (max-width: 320px) {
+            .print-jobs-table {
+                min-width: 500px;
+                font-size: 0.55rem;
+            }
+        }
+
+        /* Touch improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .btn:hover,
+            .nav-link:hover,
+            .quick-action:hover,
+            .card:hover,
+            .logout-btn:hover {
+                transform: none;
+            }
+            
+            .btn:active,
+            .nav-link:active,
+            .quick-action:active {
+                transform: scale(0.98);
+            }
+        }
+
+        /* Landscape mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .main-content {
+                padding-top: 3.5rem;
+            }
+            
+            .mobile-menu-toggle {
+                top: 0.5rem;
+                left: 0.5rem;
+            }
+            
+            .welcome-section {
+                padding: 1.25rem;
+            }
+            
+            .welcome-section h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+            
+            .loading-spinner {
+                animation: none;
+                border: 4px solid var(--primary-color);
+            }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --border-color: #000;
+                --text-muted: #333;
+                --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --secondary-color: #1f2937;
+                --text-primary: #f9fafb;
+                --text-secondary: #d1d5db;
+                --text-muted: #9ca3af;
+                --border-color: #374151;
+            }
+            
+            body {
+                background-color: #111827;
+            }
+            
+            .sidebar,
+            .card,
+            .modal {
+                background: #1f2937;
+                border-color: #374151;
+            }
+            
+            .welcome-section {
+                background: var(--gradient-primary);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p>Loading Dashboard...</p>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Open navigation menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar" style="display: none;">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-logo">
+                <div class="sidebar-logo-icon">
+                    <i class="fas fa-print"></i>
+                </div>
+                <span class="sidebar-logo-text">Printerest</span>
+            </a>
+            <button class="sidebar-close" id="sidebarClose" aria-label="Close navigation menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <ul class="sidebar-nav">
+            <li class="nav-item">
+                <a href="2) Dashboard.html" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span class="nav-link-text">Dashboard</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="3) Upload.html" class="nav-link">
+                    <i class="fas fa-upload"></i>
+                    <span class="nav-link-text">Upload Document</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="4) Add Money.html" class="nav-link">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span class="nav-link-text">Add Money</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="5) About Us.html" class="nav-link">
+                    <i class="fas fa-info-circle"></i>
+                    <span class="nav-link-text">About Us</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="6) Contact Us.html" class="nav-link">
+                    <i class="fas fa-envelope"></i>
+                    <span class="nav-link-text">Contact Us</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-user">
+            <!-- E-wallet Display -->
+            <div class="wallet-display">
+                <div class="wallet-title">
+                    <i class="fas fa-wallet"></i>
+                    E-Wallet
+                </div>
+                <div class="wallet-amount" id="walletAmount">₱0.00</div>
+            </div>
+            
+            <div class="user-profile" id="userProfile">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">User</div>
+                    <div class="user-role">Student</div>
+                </div>
+            </div>
+
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="logout-btn-text">Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent" style="display: none;">
+        <div class="content-wrapper">
+            <!-- Welcome Section -->
+            <section class="welcome-section">
+                <div class="welcome-content">
+                    <h1 id="welcomeMessage">Welcome back!</h1>
+                    <p>Ready to print your documents? Upload your files and let us handle the rest.</p>
+                    <div class="quick-actions">
+                        <a href="#" class="quick-action">
+                            <i class="fas fa-upload"></i>
+                            Upload Document
+                        </a>
+                        <a href="#" class="quick-action" id="editProfileBtn">
+                            <i class="fas fa-user-edit"></i>
+                            Edit Profile
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Print History -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">
+                            <i class="fas fa-history"></i>
+                            Print Job History
+                        </h2>
+                        <button class="btn btn-primary" id="refreshJobs">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+                    <div id="printHistoryContainer">
+                        <!-- Table will be immediately visible when loaded -->
+                        <div class="table-container">
+                            <table class="print-jobs-table">
+                                <thead>
+                                    <tr>
+                                        <th>Job ID</th>
+                                        <th>Date</th>
+                                        <th>Subject/Course</th>
+                                        <th>Files</th>
+                                        <th>Amount</th>
+                                        <th>Payment Method</th>
+                                        <th>Arduino Code</th>
+                                        <th>Notes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="8">
+                                            <div class="loading-state">
+                                                <div class="spinner"></div>
+                                                <p>Loading print jobs...</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Card -->
+                <div class="card profile-card">
+                    <div class="profile-avatar" id="profileAvatar">U</div>
+                    <div class="profile-name" id="profileName">User</div>
+                    <div class="profile-email" id="profileEmail">user@example.com</div>
+                    <div class="profile-id" id="profileId">ID: userinfo0001</div>
+                    
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <div class="stat-number" id="totalJobs">0</div>
+                            <div class="stat-label">Total Jobs</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-number" id="totalSpent">₱0.00</div>
+                            <div class="stat-label">Total Spent</div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" id="editProfileBtn2">
+                        <i class="fas fa-edit"></i>
+                        Edit Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal-overlay" id="editProfileModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Edit Profile</h2>
+                <button type="button" class="modal-close" id="closeEditProfile" aria-label="Close modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label for="editFirstName">First Name</label>
+                    <input type="text" id="editFirstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editLastName">Last Name</label>
+                    <input type="text" id="editLastName" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email</label>
+                    <input type="email" id="editEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="editStudentId">Student ID</label>
+                    <input type="text" id="editStudentId" name="studentId" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCourse">Course</label>
+                    <select id="editCourse" name="course" required>
+                        <option value="">Select your course</option>
+                        <option value="computer-science">Computer Science</option>
+                        <option value="information-technology">Information Technology</option>
+                        <option value="engineering">Engineering</option>
+                        <option value="business">Business Administration</option>
+                        <option value="education">Education</option>
+                        <option value="nursing">Nursing</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-outline" id="cancelEdit">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal logout-modal">
+            <div class="logout-modal-icon">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <h2>Confirm Logout</h2>
+            <p>Are you sure you want to logout from your account?</p>
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-outline" id="cancelLogout">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmLogout">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Firebase configuration
+        const FIREBASE_URL = 'https://printerest2025-83043-default-rtdb.firebaseio.com';
+
+        // Global variables
+        let userProfile = {
+            firstName: '',
+            lastName: '',
+            email: '',
+            studentId: '',
+            course: '',
+            userId: ''
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                hideLoadingScreen();
+                setupEventListeners();
+                loadUserData();
+            }, 500); // Reduced loading time for immediate visibility
+        });
+
+        function hideLoadingScreen() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (loadingScreen) {
+                loadingScreen.style.display = 'none';
+            }
+            if (sidebar) {
+                sidebar.style.display = 'flex';
+            }
+            if (mainContent) {
+                mainContent.style.display = 'block';
+            }
+        }
+
+        function setupEventListeners() {
+            // Mobile menu controls
+            const mobileToggle = document.getElementById('mobileMenuToggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarClose = document.getElementById('sidebarClose');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', function() {
+                    sidebar.classList.add('show');
+                    mobileOverlay.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+
+            if (sidebarClose) {
+                sidebarClose.addEventListener('click', closeMobileSidebar);
+            }
+
+            if (mobileOverlay) {
+                mobileOverlay.addEventListener('click', closeMobileSidebar);
+            }
+
+            // Edit profile buttons
+            document.getElementById('editProfileBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                showEditProfileModal();
+            });
+            document.getElementById('editProfileBtn2').addEventListener('click', showEditProfileModal);
+            
+            // Modal controls
+            document.getElementById('closeEditProfile').addEventListener('click', hideEditProfileModal);
+            document.getElementById('cancelEdit').addEventListener('click', hideEditProfileModal);
+            
+            // Forms
+            document.getElementById('editProfileForm').addEventListener('submit', handleProfileUpdate);
+            
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', showLogoutModal);
+            document.getElementById('cancelLogout').addEventListener('click', hideLogoutModal);
+            document.getElementById('confirmLogout').addEventListener('click', handleLogout);
+
+            // Refresh jobs button
+            document.getElementById('refreshJobs').addEventListener('click', function() {
+                loadPrintJobs();
+            });
+            
+            // Close modals when clicking outside
+            document.getElementById('editProfileModal').addEventListener('click', function(e) {
+                if (e.target === this) hideEditProfileModal();
+            });
+            
+            document.getElementById('logoutModal').addEventListener('click', function(e) {
+                if (e.target === this) hideLogoutModal();
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    if (document.getElementById('editProfileModal').classList.contains('show')) {
+                        hideEditProfileModal();
+                    }
+                    if (document.getElementById('logoutModal').classList.contains('show')) {
+                        hideLogoutModal();
+                    }
+                    if (sidebar.classList.contains('show')) {
+                        closeMobileSidebar();
+                    }
+                }
+            });
+        }
+
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mobileOverlay = document.getElementById('mobileOverlay');
+            
+            sidebar.classList.remove('show');
+            mobileOverlay.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function loadUserData() {
+            // Get user data from localStorage
+            const storedUser = localStorage.getItem('printerest_user');
+
+            if (storedUser) {
+                try {
+                    const userData = JSON.parse(storedUser);
+                    userProfile = {
+                        userId: userData.userId || 'userinfo0001',
+                        firstName: userData.firstName || 'User',
+                        lastName: userData.lastName || '',
+                        email: userData.email || 'user@example.com',
+                        studentId: userData.studentId || 'userinfo0001',
+                        course: userData.course || ''
+                    };
+
+                    console.log('Loaded user data:', userProfile);
+
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                    setDefaultUserProfile();
+                }
+            } else {
+                setDefaultUserProfile();
+            }
+
+            updateUserDisplay();
+            loadPrintJobs();
+            loadEWalletData(); // Load e-wallet data after user data is loaded
+        }
+
+        function setDefaultUserProfile() {
+            userProfile = {
+                userId: 'userinfo0001',
+                firstName: 'User',
+                lastName: '',
+                email: 'user@example.com',
+                studentId: 'userinfo0001',
+                course: ''
+            };
+            localStorage.setItem('printerest_user', JSON.stringify(userProfile));
+        }
+
+        async function loadEWalletData() {
+            try {
+                if (!userProfile.userId) {
+                    console.log('No user ID found for e-wallet lookup');
+                    return;
+                }
+
+                console.log('Loading e-wallet data for user:', userProfile.userId);
+
+                // Fetch user data from Firebase to get e_wallet_stats
+                const response = await fetch(`${FIREBASE_URL}/users/${userProfile.userId}.json`);
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        // User record doesn't exist, display zero
+                        document.getElementById('walletAmount').textContent = '₱0.00';
+                        return;
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const userData = await response.json();
+                console.log('User data for e-wallet:', userData);
+
+                if (userData && typeof userData.e_wallet_stats !== 'undefined') {
+                    const amount = parseFloat(userData.e_wallet_stats || 0);
+                    document.getElementById('walletAmount').textContent = `₱${amount.toFixed(2)}`;
+                } else {
+                    // No e_wallet_stats found, display zero
+                    document.getElementById('walletAmount').textContent = '₱0.00';
+                }
+
+            } catch (error) {
+                console.error('Error loading e-wallet data:', error);
+                // On error, keep the default value
+                document.getElementById('walletAmount').textContent = '₱0.00';
+            }
+        }
+
+        async function loadPrintJobs() {
+            const container = document.getElementById('printHistoryContainer');
+            
+            // Show loading state with table structure immediately visible
+            container.innerHTML = `
+                <div class="table-container">
+                    <table class="print-jobs-table">
+                        <thead>
+                            <tr>
+                                <th>Job ID</th>
+                                <th>Date</th>
+                                <th>Subject/Course</th>
+                                <th>Files</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Arduino Code</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="8">
+                                    <div class="loading-state">
+                                        <div class="spinner"></div>
+                                        <p>Loading print jobs...</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            try {
+                if (!userProfile.userId) {
+                    throw new Error('User ID not found');
+                }
+
+                console.log('Loading print jobs for user:', userProfile.userId);
+
+                // Fetch print jobs from Firebase
+                const response = await fetch(`${FIREBASE_URL}/print_jobs.json`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const allJobs = await response.json();
+                console.log('All jobs from Firebase:', allJobs);
+
+                if (!allJobs) {
+                    showEmptyState();
+                    return;
+                }
+
+                // Filter jobs for current user
+                const userJobs = [];
+                Object.keys(allJobs).forEach(jobId => {
+                    const job = allJobs[jobId];
+                    console.log(`Checking job ${jobId}:`, job);
+
+                    // Use the correct field name from upload code
+                    if (job.user_info_id === userProfile.userId) {
+                        userJobs.push({
+                            id: jobId,
+                            ...job
+                        });
+                        console.log(`Match found for job ${jobId}`);
+                    }
+                });
+
+                console.log('Filtered user jobs:', userJobs);
+
+                if (userJobs.length === 0) {
+                    showEmptyState();
+                    return;
+                }
+
+                // Sort jobs by timestamp (most recent first)
+                userJobs.sort((a, b) => {
+                    const timeA = new Date(a.print_job_timestamp || 0);
+                    const timeB = new Date(b.print_job_timestamp || 0);
+                    return timeB - timeA;
+                });
+
+                displayPrintJobsTable(userJobs);
+                updateStats(userJobs);
+
+            } catch (error) {
+                console.error('Error loading print jobs:', error);
+                showErrorState(error.message);
+            }
+        }
+
+        function displayPrintJobsTable(jobs) {
+            const container = document.getElementById('printHistoryContainer');
+            
+            const tableHTML = `
+                <div class="table-container">
+                    <table class="print-jobs-table">
+                        <thead>
+                            <tr>
+                                <th>Job ID</th>
+                                <th>Date</th>
+                                <th>Subject/Course</th>
+                                <th>Files</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Arduino Code</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${jobs.map(job => {
+                                const fileName = job.print_job_file_URL ? 
+                                    job.print_job_file_URL.split('/').pop().split('?')[0] : 
+                                    'N/A';
+
+                                // Display file information
+                                const fileInfo = job.uploaded_files && job.uploaded_files.length > 0 
+                                    ? job.uploaded_files.map(file => 
+                                        `<div class="file-item">
+                                            <strong>${file.original_name || 'N/A'}</strong><br>
+                                            <small>Size: ${formatFileSize(file.file_size || 0)}</small><br>
+                                            <small>Pages: ${file.pages || 0}</small><br>
+                                            <small><a href="${file.google_drive_url || '#'}" target="_blank" style="color: #054089; text-decoration: none;">📄 View File</a></small>
+                                        </div>`
+                                    ).join('')
+                                    : 'No files uploaded';
+
+                                // Enhanced payment method with beautiful colors and styling
+                                let paymentMethodDisplay = '';
+                                const paymentMethod = job.payment_method || 'N/A';
+                                const paymentStatus = job.payment_status || '';
+
+                                if (paymentMethod === 'E-WALLET PAYMENT') {
+                                    paymentMethodDisplay = `
+                                        <span style="
+                                            background: linear-gradient(135deg, #10b981, #059669); 
+                                            color: white; 
+                                            padding: 8px 12px; 
+                                            border-radius: 20px; 
+                                            font-size: 0.8em; 
+                                            font-weight: 600; 
+                                            display: inline-flex; 
+                                            align-items: center; 
+                                            gap: 6px;
+                                            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                                            border: 1px solid rgba(255, 255, 255, 0.2);
+                                            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+                                            letter-spacing: 0.3px;
+                                        ">
+                                            <span style="font-size: 1.1em;">💳</span> E-WALLET PAYMENT
+                                        </span>
+                                    `;
+                                } else if (paymentMethod === 'CASH PAYMENT' && paymentStatus === 'PENDING') {
+                                    paymentMethodDisplay = `
+                                        <span style="
+                                            background: linear-gradient(135deg, #f59e0b, #d97706); 
+                                            color: white; 
+                                            padding: 8px 12px; 
+                                            border-radius: 20px; 
+                                            font-size: 0.8em; 
+                                            font-weight: 600; 
+                                            display: inline-flex; 
+                                            align-items: center; 
+                                            gap: 6px;
+                                            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+                                            border: 1px solid rgba(255, 255, 255, 0.2);
+                                            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+                                            letter-spacing: 0.3px;
+                                            animation: pulse 2s ease-in-out infinite;
+                                        ">
+                                            <span style="font-size: 1.1em;">⏳</span> CASH PAYMENT: PENDING
+                                        </span>
+                                        <style>
+                                            @keyframes pulse {
+                                                0%, 100% { opacity: 1; }
+                                                50% { opacity: 0.7; }
+                                            }
+                                        </style>
+                                    `;
+                                } else if (paymentMethod === 'CASH PAYMENT' && paymentStatus === 'PAID') {
+                                    paymentMethodDisplay = `
+                                        <span style="
+                                            background: linear-gradient(135deg, #059669, #047857); 
+                                            color: white; 
+                                            padding: 8px 12px; 
+                                            border-radius: 20px; 
+                                            font-size: 0.8em; 
+                                            font-weight: 600; 
+                                            display: inline-flex; 
+                                            align-items: center; 
+                                            gap: 6px;
+                                            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+                                            border: 1px solid rgba(255, 255, 255, 0.2);
+                                            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+                                            letter-spacing: 0.3px;
+                                        ">
+                                            <span style="font-size: 1.1em;">✅</span> CASH PAYMENT: PAID
+                                        </span>
+                                    `;
+                                } else {
+                                    paymentMethodDisplay = `
+                                        <span style="
+                                            background: linear-gradient(135deg, #6b7280, #4b5563); 
+                                            color: white; 
+                                            padding: 8px 12px; 
+                                            border-radius: 20px; 
+                                            font-size: 0.8em; 
+                                            font-weight: 600;
+                                            display: inline-flex; 
+                                            align-items: center; 
+                                            gap: 6px;
+                                            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
+                                            border: 1px solid rgba(255, 255, 255, 0.2);
+                                            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+                                            letter-spacing: 0.3px;
+                                        ">
+                                            <span style="font-size: 1.1em;">❓</span> ${paymentMethod}
+                                        </span>
+                                    `;
+                                }
+
+                                return `
+                                    <tr>
+                                        <td><strong>${job.print_job_id || 'N/A'}</strong></td>
+                                        <td>${formatDate(job.created_date)}</td>
+                                        <td>${job.subject_course || 'N/A'}</td>
+                                        <td>${fileInfo}</td>
+                                        <td>₱${parseFloat(job.total_amount || 0).toFixed(2)}</td>
+                                        <td>${paymentMethodDisplay}</td>
+                                        <td><code style="background: #f3f4f6; padding: 4px 6px; border-radius: 4px; font-size: 0.85em; color: #1f2937;">${job.arduino_code || 'N/A'}</code></td>
+                                        <td>${job.additional_notes || 'None'}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            
+            container.innerHTML = tableHTML;
+        }
+
+        function showEmptyState() {
+            const container = document.getElementById('printHistoryContainer');
+            container.innerHTML = `
+                <div class="table-container">
+                    <table class="print-jobs-table">
+                        <thead>
+                            <tr>
+                                <th>Job ID</th>
+                                <th>Date</th>
+                                <th>Subject/Course</th>
+                                <th>Files</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Arduino Code</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="8">
+                                    <div class="empty-state">
+                                        <i class="fas fa-print"></i>
+                                        <h3>No Print Jobs Yet</h3>
+                                        <p>Upload your first document to get started</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function showErrorState(message) {
+            const container = document.getElementById('printHistoryContainer');
+            container.innerHTML = `
+                <div class="table-container">
+                    <table class="print-jobs-table">
+                        <thead>
+                            <tr>
+                                <th>Job ID</th>
+                                <th>Date</th>
+                                <th>Subject/Course</th>
+                                <th>Files</th>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Arduino Code</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="8">
+                                    <div class="error-state">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                        <h3>Error Loading Print Jobs</h3>
+                                        <p>${message}</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+
+        function updateUserDisplay() {
+            const fullName = `${userProfile.firstName} ${userProfile.lastName}`.trim();
+            const initials = `${userProfile.firstName.charAt(0)}${userProfile.lastName.charAt(0)}`.toUpperCase();
+
+            // Update all user display elements
+            document.getElementById('userName').textContent = fullName || 'User';
+            document.getElementById('userAvatar').textContent = initials || 'U';
+            document.getElementById('profileName').textContent = fullName || 'User';
+            document.getElementById('profileAvatar').textContent = initials || 'U';
+            document.getElementById('profileEmail').textContent = userProfile.email;
+            document.getElementById('profileId').textContent = `ID: ${userProfile.studentId}`;
+            document.getElementById('welcomeMessage').textContent = `Welcome back, ${userProfile.firstName || 'User'}!`;
+        }
+
+        function updateStats(jobs) {
+            const totalJobs = jobs.length;
+            const totalSpent = jobs.reduce((sum, job) => {
+                return sum + parseFloat(job['total_amount'] || 0);
+            }, 0);
+
+            document.getElementById('totalJobs').textContent = totalJobs;
+            document.getElementById('totalSpent').textContent = `₱${totalSpent.toFixed(2)}`;
+        }
+
+        function showEditProfileModal() {
+            // Populate form with current data
+            document.getElementById('editFirstName').value = userProfile.firstName;
+            document.getElementById('editLastName').value = userProfile.lastName;
+            document.getElementById('editEmail').value = userProfile.email;
+            document.getElementById('editStudentId').value = userProfile.studentId;
+            document.getElementById('editCourse').value = userProfile.course;
+            
+            document.getElementById('editProfileModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+            
+            // Focus first input
+            setTimeout(() => {
+                document.getElementById('editFirstName').focus();
+            }, 100);
+        }
+
+        function hideEditProfileModal() {
+            document.getElementById('editProfileModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        async function handleProfileUpdate(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const updateData = {
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                email: formData.get('email'),
+                studentId: formData.get('studentId'),
+                course: formData.get('course')
+            };
+
+            try {
+                let userId = userProfile.userId;
+
+                if (!userId) {
+                    const storedUser = localStorage.getItem('printerest_user');
+                    if (!storedUser) {
+                        throw new Error('No user session found');
+                    }
+
+                    const currentUser = JSON.parse(storedUser);
+                    userId = currentUser.userId;
+                }
+
+                if (!userId) {
+                    throw new Error('User ID not found. Please log in again.');
+                }
+
+                console.log('Updating profile for user ID:', userId);
+
+                // Update user data in Firebase
+                const response = await fetch(`${FIREBASE_URL}/users/${userId}.json`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                console.log('Firebase response status:', response.status);
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('User not found in database. Please contact support.');
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Firebase update result:', result);
+
+                // Update the global userProfile object
+                userProfile = { ...userProfile, ...updateData, userId: userId };
+
+                // Save updated profile to localStorage
+                localStorage.setItem('printerest_user', JSON.stringify(userProfile));
+
+                // Update the display with new information
+                updateUserDisplay();
+                hideEditProfileModal();
+                showToast('Profile updated successfully!', 'success');
+
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showToast(error.message || 'An error occurred while updating profile', 'error');
+            }
+        }
+
+        function showLogoutModal() {
+            document.getElementById('logoutModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function hideLogoutModal() {
+            document.getElementById('logoutModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        async function handleLogout() {
+            try {
+                // Clear localStorage
+                localStorage.removeItem('printerest_user');
+                localStorage.removeItem('loginTime');
+
+                // Show success message
+                showToast('Logged out successfully!', 'success');
+
+                // Redirect to login page after a short delay
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } catch (error) {
+                console.error('Error during logout:', error);
+                // Force redirect even if logout fails
+                window.location.href = 'index.html';
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            // Create toast container if it doesn't exist
+            let container = document.getElementById('toastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            // Remove toast after 4 seconds
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.remove();
+                }
+            }, 4000);
+        }
+
+        // Add smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add loading states for buttons
+        function addLoadingState(button, originalText) {
+            button.disabled = true;
+            button.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Loading...`;
+            
+            return function removeLoadingState() {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            };
+        }
+
+        // Performance optimization: Debounce resize events
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                // Handle any resize-specific logic here
+                if (window.innerWidth > 768 && document.getElementById('sidebar').classList.contains('show')) {
+                    closeMobileSidebar();
+                }
+            }, 250);
+        });
+
+        // Helper function to format file size
+        function formatFileSize(bytes, decimals = 2) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+        }
+
+        // Helper function to format date
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+    </script>
+</body>
+</html>

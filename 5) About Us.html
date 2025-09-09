@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printerest - About Us</title>
+    <link rel="icon" type="image/x-icon" href="ICON.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #054089;
+            --primary-light: #2563eb;
+            --primary-dark: #1e40af;
+            --secondary-color: #f8fafc;
+            --accent-color: #10b981;
+            --error-color: #ef4444;
+            --warning-color: #f59e0b;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --text-muted: #9ca3af;
+            --border-color: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+            --sidebar-width: 280px;
+            --sidebar-width-collapsed: 80px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background-color: var(--secondary-color);
+            overflow-x: hidden;
+        }
+
+        /* Mobile Menu Button */
+        .mobile-menu-btn {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 0.75rem;
+            font-size: 1.25rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            display: none;
+        }
+
+        .mobile-menu-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Sidebar styles */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background: white;
+            border-right: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-width-collapsed);
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+        }
+
+        .sidebar-logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .sidebar-logo-text {
+            opacity: 0;
+            width: 0;
+        }
+
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
+        .sidebar-nav {
+            padding: 1rem;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .nav-link-text {
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar.collapsed .nav-link-text {
+            opacity: 0;
+            width: 0;
+        }
+
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+        }
+
+        .sidebar-user {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            border-top: 1px solid var(--border-color);
+            background: white;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-profile:hover {
+            background: var(--secondary-color);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+   /* E-wallet Display Styles */
+        .wallet-display {
+            background: linear-gradient(135deg, var(--accent-color), #059669);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .wallet-title {
+            font-size: 0.8rem;
+            font-weight: 500;
+            opacity: 0.9;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .wallet-amount {
+            font-size: 1.25rem;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .wallet-icon {
+            font-size: 1rem;
+        }
+
+        .sidebar.collapsed .wallet-display {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .sidebar.collapsed .wallet-title {
+            display: none;
+        }
+
+        .sidebar.collapsed .wallet-amount {
+            font-size: 1rem;
+        }
+
+        .user-info {
+            flex: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .user-role {
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .sidebar.collapsed .user-info {
+            opacity: 0;
+            width: 0;
+        }
+
+        /* Logout Button Styles */
+        .logout-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.75rem;
+            background: transparent;
+            border: 2px solid var(--error-color);
+            border-radius: 0.5rem;
+            color: var(--error-color);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            margin-top: 0.75rem;
+        }
+
+        .logout-btn:hover {
+            background: var(--error-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .sidebar.collapsed .logout-btn {
+            padding: 0.75rem 0.5rem;
+        }
+
+        .sidebar.collapsed .logout-btn-text {
+            display: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar.collapsed ~ .main-content {
+            margin-left: var(--sidebar-width-collapsed);
+        }
+
+        .content-wrapper {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 1.5rem;
+            margin-bottom: 4rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .hero-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* About Content */
+        .about-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            padding: 2rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+        }
+
+        .feature {
+            text-align: center;
+        }
+
+        .feature-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            background: var(--gradient-primary);
+            border-radius: 1rem;
+            font-size: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .feature p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        /* Project Info Section */
+        .project-info {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-md);
+            padding: 3rem 2rem;
+            margin-bottom: 4rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .project-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .project-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .project-header p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: var(--secondary-color);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .info-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            border-radius: 0.75rem;
+            font-size: 1.25rem;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .info-content h4 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .info-content p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Vision & Mission Section */
+        .vision-mission {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .vision-card,
+        .mission-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: var(--shadow-md);
+            padding: 2.5rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .vision-card::before,
+        .mission-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .vision-card h3,
+        .mission-card h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .vision-card p,
+        .mission-card p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* Team Section */
+        .team-section {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-md);
+            padding: 3rem 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .team-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .team-header h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .team-header p {
+            font-size: 1.125rem;
+            color: var(--text-secondary);
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 2rem 1rem;
+            background: var(--secondary-color);
+            border-radius: 1rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0 auto 1rem;
+        }
+
+        .member-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Toast Styles */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1002;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .toast {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: var(--shadow-lg);
+            padding: 1rem 1.5rem;
+            border-left: 4px solid var(--accent-color);
+            max-width: 400px;
+            animation: slideIn 0.3s ease-out;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning-color);
+        }
+
+        .toast.error {
+            border-left-color: var(--error-color);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 500px;
+            animation: modalSlideIn 0.3s ease-out;
+            position: relative;
+            z-index: 1101;
+        }
+
+        /* Logout Confirmation Modal Styles */
+        .logout-modal {
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .logout-modal-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--error-color);
+        }
+
+        .logout-modal h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .logout-modal p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .logout-modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.75rem 2rem;
+        }
+
+        .btn-secondary:hover {
+            background: var(--secondary-color);
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+            padding: 0.75rem 2rem;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .vision-mission {
+                grid-template-columns: 1fr;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                width: var(--sidebar-width);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .sidebar.collapsed {
+                width: var(--sidebar-width);
+                transform: translateX(-100%);
+            }
+
+            .sidebar.collapsed.show {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding-top: 80px;
+            }
+
+            .sidebar.collapsed ~ .main-content {
+                margin-left: 0;
+            }
+
+            .content-wrapper {
+                padding: 1rem;
+            }
+
+            .hero-section {
+                padding: 3rem 1.5rem;
+            }
+
+            .hero-section h1 {
+                font-size: 2.25rem;
+            }
+
+            .project-info,
+            .team-section {
+                padding: 2rem 1.5rem;
+            }
+
+            .project-header h2 {
+                font-size: 2rem;
+            }
+
+            .team-header h2 {
+                font-size: 1.875rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .vision-card,
+            .mission-card {
+                padding: 2rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .team-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+
+            .logout-modal-actions {
+                flex-direction: column;
+            }
+
+            .logout-modal-actions .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-section h1 {
+                font-size: 2rem;
+            }
+
+            .hero-section p {
+                font-size: 1.125rem;
+            }
+
+            .hero-icon {
+                font-size: 3rem;
+            }
+
+            .project-header h2 {
+                font-size: 1.75rem;
+            }
+
+            .team-header h2 {
+                font-size: 1.625rem;
+            }
+
+            .feature h3 {
+                font-size: 1.25rem;
+            }
+
+            .vision-card h3,
+            .mission-card h3 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="2) Dashboard.html" class="sidebar-logo">
+                <div class="sidebar-logo-icon">
+                    <i class="fas fa-print"></i>
+                </div>
+                <div class="sidebar-logo-text">Printerest</div>
+            </a>
+            <button class="sidebar-toggle" id="sidebarToggle" hidden>
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <div class="nav-item">
+                <a href="2) Dashboard.html" class="nav-link">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="nav-link-text">Dashboard</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="3) Upload.html" class="nav-link">
+                    <i class="fas fa-upload"></i>
+                    <span class="nav-link-text">Upload</span>
+                </a>
+            </div>
+             <li class="nav-item">
+                <a href="4) Add Money.html" class="nav-link">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span class="nav-link-text">Add Money</span>
+                </a>
+            </li>
+            <div class="nav-item">
+                <a href="5) About Us.html" class="nav-link active">
+                    <i class="fas fa-info-circle"></i>
+                    <span class="nav-link-text">About</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="6) Contact Us.html" class="nav-link">
+                    <i class="fas fa-envelope"></i>
+                    <span class="nav-link-text">Contact</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-user">
+             <!-- E-wallet Display -->
+            <div class="wallet-display">
+                <div class="wallet-title">
+                    <i class="fas fa-wallet"></i>
+                    E-Wallet
+                </div>
+                <div class="wallet-amount" id="walletAmount">₱0.00</div>
+            </div>
+            
+            <div class="user-profile" id="userProfile">
+                <div class="user-avatar" id="userAvatar">JD</div>
+                <div class="user-info">
+                    <div class="user-name" id="userName">John Doe</div>
+                    <div class="user-role">Student</div>
+                </div>
+            </div>
+
+            <!-- Logout Button -->
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="logout-btn-text">Logout</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Logout Confirmation Modal -->
+    <div class="modal-overlay" id="logoutModal">
+        <div class="modal logout-modal">
+            <div class="logout-modal-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <h2>Confirm Logout</h2>
+            <p>Are you sure you want to logout? You will need to sign in again to access your account.</p>
+            <div class="logout-modal-actions">
+                <button class="btn btn-secondary" id="cancelLogout">
+                    <i class="fas fa-times"></i>
+                    No, Cancel
+                </button>
+                <button class="btn btn-danger" id="confirmLogout">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Yes, Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <!-- Hero Section -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <div class="hero-icon">
+                        <i class="fas fa-print"></i>
+                    </div>
+                    <h1>About Printerest</h1>
+                    <p>A smart student printer assistant system designed to revolutionize campus printing with convenience, efficiency, and affordability.</p>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="about-content">
+                <div class="card">
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Fast & Convenient</h3>
+                        <p>Upload and print your documents in minutes. No need to visit the library or computer lab to print. Our streamlined process saves you time and effort.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Secure & Reliable</h3>
+                        <p>Your documents are processed securely and deleted immediately after printing. We use industry-standard encryption to protect your privacy and data.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <h3>Affordable Pricing</h3>
+                        <p>Student-friendly pricing with transparent costs. No hidden fees or surprises. Pay only for what you print with competitive rates.</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="feature">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3>Mobile Optimized</h3>
+                        <p>Print from anywhere on campus using your smartphone or tablet. Our responsive design works perfectly on all devices and screen sizes.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Project Info Section -->
+            <section class="project-info">
+                <div class="project-header">
+                    <h2>What is Printerest?</h2>
+                    <p>Learn more about our mission to improve student life through smart printing solutions</p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Smart Printing Solution</h4>
+                            <p>Printerest is a web-based platform that connects students with campus printing services, making document printing seamless and efficient.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Student-Centered Design</h4>
+                            <p>Built by students, for students. Our platform addresses real campus printing challenges with practical solutions.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Our Purpose</h4>
+                            <p>To eliminate printing hassles and provide students with a reliable, affordable way to get their documents printed quickly.</p>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Campus Integration</h4>
+                            <p>Seamlessly integrated with campus systems to provide a unified printing experience for all students and faculty.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vision & Mission Section -->
+            <section class="vision-mission">
+                <div class="vision-card">
+                    <h3>
+                        <i class="fas fa-eye"></i>
+                        Our Vision
+                    </h3>
+                    <p>To become the leading digital printing solution for educational institutions, transforming how students access printing services by making it more convenient, affordable, and environmentally sustainable.</p>
+                </div>
+
+                <div class="mission-card">
+                    <h3>
+                        <i class="fas fa-rocket"></i>
+                        Our Mission
+                    </h3>
+                    <p>To provide students with a seamless, secure, and cost-effective printing experience through innovative technology, while reducing paper waste and improving campus efficiency.</p>
+                </div>
+            </section>
+
+            <!-- Team Section -->
+            <section class="team-section">
+                <div class="team-header">
+                    <h2>Development Team</h2>
+                    <p>Meet the talented students behind Printerest</p>
+                </div>
+
+                <div class="team-grid">
+                    <div class="team-member">
+                        <div class="member-avatar">JD</div>
+                        <div class="member-name">John Doe</div>
+                        <div class="member-role">Lead Developer & UI/UX Designer</div>
+                    </div>
+
+                    <div class="team-member">
+                        <div class="member-avatar">JS</div>
+                        <div class="member-name">Jane Smith</div>
+                        <div class="member-role">Backend Developer & Database Admin</div>
+                    </div>
+
+                    <div class="team-member">
+                        <div class="member-avatar">MB</div>
+                        <div class="member-name">Mike Brown</div>
+                        <div class="member-role">Frontend Developer & QA Tester</div>
+                    </div>
+
+                    <div class="team-member">
+                        <div class="member-avatar">SJ</div>
+                        <div class="member-name">Sarah Johnson</div>
+                        <div class="member-role">Project Manager & Business Analyst</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const FIREBASE_URL = 'https://printerest2025-83043-default-rtdb.firebaseio.com';
+
+        // Global variables
+        let userProfile = {
+            userId: '',
+            firstName: '',
+            lastName: '',
+            email: '',
+            studentId: '',
+            course: ''
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadUserData();
+            setupSidebar();
+            setupLogoutModal();
+            setupAnimations();
+        });
+
+        function loadUserData() {
+            // Get user data from localStorage
+            const storedUser = localStorage.getItem('printerest_user');
+
+            if (storedUser) {
+                try {
+                    const userData = JSON.parse(storedUser);
+                    userProfile = {
+                        userId: userData.userId || 'userinfo0001',
+                        firstName: userData.firstName || 'John',
+                        lastName: userData.lastName || 'Doe',
+                        email: userData.email || '',
+                        studentId: userData.studentId || '',
+                        course: userData.course || ''
+                    };
+                } catch (error) {
+                    console.error('Error parsing user data:', error);
+                    // Fallback to default data if parsing fails
+                    userProfile = {
+                        userId: 'userinfo0001',
+                        firstName: 'John',
+                        lastName: 'Doe',
+                        email: '',
+                        studentId: '',
+                        course: ''
+                    };
+                }
+            } else {
+                // Redirect to login if no user data found
+                window.location.href = 'index.html';
+                return;
+            }
+
+            updateUserDisplay();
+            loadEWalletData(); // Load e-wallet data after user data is loaded
+        }
+
+        async function loadEWalletData() {
+            try {
+                if (!userProfile.userId) {
+                    console.log('No user ID found for e-wallet lookup');
+                    return;
+                }
+
+                console.log('Loading e-wallet data for user:', userProfile.userId);
+
+                // Fetch user data from Firebase to get e_wallet_stats
+                const response = await fetch(`${FIREBASE_URL}/users/${userProfile.userId}.json`);
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        // User record doesn't exist, display zero
+                        document.getElementById('walletAmount').textContent = '₱0.00';
+                        return;
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const userData = await response.json();
+                console.log('User data for e-wallet:', userData);
+
+                if (userData && typeof userData.e_wallet_stats !== 'undefined') {
+                    const amount = parseFloat(userData.e_wallet_stats || 0);
+                    document.getElementById('walletAmount').textContent = `₱${amount.toFixed(2)}`;
+                } else {
+                    // No e_wallet_stats found, display zero
+                    document.getElementById('walletAmount').textContent = '₱0.00';
+                }
+
+            } catch (error) {
+                console.error('Error loading e-wallet data:', error);
+                // On error, keep the default value
+                document.getElementById('walletAmount').textContent = '₱0.00';
+            }
+        }
+
+        function updateUserDisplay() {
+            const fullName = `${userProfile.firstName} ${userProfile.lastName}`;
+            const initials = `${userProfile.firstName.charAt(0)}${userProfile.lastName.charAt(0)}`;
+
+            // Update user info in sidebar
+            const userAvatar = document.getElementById('userAvatar');
+            const userName = document.getElementById('userName');
+
+            if (userAvatar) {
+                userAvatar.textContent = initials;
+            }
+
+            if (userName) {
+                userName.textContent = fullName;
+            }
+        }
+
+        function setupSidebar() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+            // Mobile menu button
+            if (mobileMenuBtn && sidebar && sidebarOverlay) {
+                mobileMenuBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    sidebar.classList.toggle('show');
+                    sidebarOverlay.classList.toggle('show');
+                });
+            }
+
+            // Desktop sidebar toggle
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if (window.innerWidth > 768) {
+                        sidebar.classList.toggle('collapsed');
+                    } else {
+                        sidebar.classList.remove('show');
+                        sidebarOverlay.classList.remove('show');
+                    }
+                });
+            }
+
+            // Overlay click to close
+            if (sidebarOverlay && sidebar) {
+                sidebarOverlay.addEventListener('click', function() {
+                    sidebar.classList.remove('show');
+                    sidebarOverlay.classList.remove('show');
+                });
+            }
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768) {
+                    sidebar.classList.remove('show');
+                    sidebarOverlay.classList.remove('show');
+                }
+            });
+
+            // Prevent body scroll when sidebar is open on mobile
+            const body = document.body;
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.attributeName === 'class') {
+                        if (sidebar.classList.contains('show') && window.innerWidth <= 768) {
+                            body.style.overflow = 'hidden';
+                        } else {
+                            body.style.overflow = '';
+                        }
+                    }
+                });
+            });
+            observer.observe(sidebar, { attributes: true });
+        }
+
+        function setupLogoutModal() {
+            const logoutBtn = document.getElementById('logoutBtn');
+            const logoutModal = document.getElementById('logoutModal');
+            const cancelLogout = document.getElementById('cancelLogout');
+            const confirmLogout = document.getElementById('confirmLogout');
+
+            // Show logout modal when logout button is clicked
+            if (logoutBtn && logoutModal) {
+                logoutBtn.addEventListener('click', function() {
+                    logoutModal.classList.add('show');
+                });
+            }
+
+            // Cancel logout - close modal
+            if (cancelLogout && logoutModal) {
+                cancelLogout.addEventListener('click', function() {
+                    logoutModal.classList.remove('show');
+                });
+            }
+
+            // Confirm logout - clear localStorage and redirect
+            if (confirmLogout) {
+                confirmLogout.addEventListener('click', function() {
+                    // Show loading state
+                    confirmLogout.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging out...';
+                    confirmLogout.disabled = true;
+                    
+                    // Clear session and redirect
+                    localStorage.removeItem('printerest_user');
+                    localStorage.removeItem('printerest_login_time');
+                    window.location.href = 'index.html';
+                });
+            }
+
+            // Close modal when clicking outside
+            if (logoutModal) {
+                logoutModal.addEventListener('click', function(e) {
+                    if (e.target === logoutModal) {
+                        logoutModal.classList.remove('show');
+                    }
+                });
+            }
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && logoutModal.classList.contains('show')) {
+                    logoutModal.classList.remove('show');
+                }
+            });
+        }
+
+        function setupAnimations() {
+            // Add scroll animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all cards and sections
+            const animatedElements = document.querySelectorAll('.card, .project-info, .vision-card, .mission-card, .team-section');
+            animatedElements.forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+
+            // Add hover effects to team members
+            const teamMembers = document.querySelectorAll('.team-member');
+            teamMembers.forEach(member => {
+                member.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                member.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+
+            // Add click effects to feature cards
+            const featureCards = document.querySelectorAll('.card');
+            featureCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.98)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-4px)';
+                    }, 150);
+                });
+            });
+        }
+
+        // Error handling
+        window.addEventListener('error', function(e) {
+            console.error('Application error:', e.error);
+        });
+    </script>
+</body>
+</html>
