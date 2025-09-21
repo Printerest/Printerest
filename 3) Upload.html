@@ -1545,8 +1545,7 @@
         <div class="cash-modal-content">
             <div class="cash-header">
                 <h2 class="cash-title">
-                   <i class="fas fa-coins"></i> ₱
-
+                    <i class="fas fa-money-bill-wave"></i>
                     Cash Payment - Arduino Code
                 </h2>
                 <p class="cash-subtitle">Your unique collection code for the Arduino printer</p>
@@ -1713,8 +1712,8 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="subject">Subject/Course *</label>
-                        <input type="text" id="subject" name="subject" required placeholder="e.g. Mathematics, Computer Science">
+                        <label for="subject">FileName *</label>
+                        <input type="text" id="subject" name="subject" required placeholder="Enter the Filename of your File">
                     </div>
 
                     <div class="form-group">
@@ -1759,6 +1758,7 @@
                         <div class="payment-method cash" onclick="selectPaymentMethod('cash')">
                             <input type="radio" name="paymentMethod" value="cash" class="payment-method-radio" id="cashPayment">
                             <i class="fas fa-coins fa-2x"></i> <span style="font-size:2em;">₱</span>
+
 
                             <div class="payment-method-name">Cash Payment</div>
                             <div class="payment-method-desc">Pay when you collect your prints</div>
@@ -3211,7 +3211,4 @@ async function loadPrintingPricesFromFirebase() {
         }
     </script>
 </body>
-
 </html>
-
-
