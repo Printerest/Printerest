@@ -436,6 +436,104 @@
             opacity: 0.9;
         }
 
+        /* GCash Payment Info Section */
+        .gcash-info-section {
+            background: linear-gradient(135deg, #00D4FF, #0099CC);
+            color: white;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+            border: 3px solid #0099CC;
+            position: relative;
+            overflow: hidden;
+            animation: pulse-border 2s ease-in-out infinite;
+        }
+
+        .gcash-info-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shine 3s ease-in-out infinite;
+        }
+
+        .gcash-info-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .gcash-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #FFEB3B;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .gcash-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .gcash-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            border-radius: 1rem;
+            margin: 1rem auto;
+            display: inline-block;
+            letter-spacing: 0.1em;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            min-width: 300px;
+        }
+
+        .gcash-instruction {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            font-weight: 500;
+            opacity: 0.95;
+        }
+
+        .gcash-warning {
+            background: rgba(255, 235, 59, 0.2);
+            border: 2px solid #FFEB3B;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% {
+                border-color: #0099CC;
+                box-shadow: var(--shadow-lg);
+            }
+            50% {
+                border-color: #FFEB3B;
+                box-shadow: var(--shadow-lg), 0 0 20px rgba(255, 235, 59, 0.5);
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+
         /* Add Money Form */
         .add-money-section {
             background: white;
@@ -929,6 +1027,20 @@
             .transaction-table td {
                 padding: 0.75rem 0.5rem;
             }
+
+            .gcash-number {
+                font-size: 2rem;
+                padding: 0.75rem 1.5rem;
+                min-width: 250px;
+            }
+
+            .gcash-title {
+                font-size: 1.5rem;
+            }
+
+            .gcash-instruction {
+                font-size: 1rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -946,6 +1058,16 @@
 
             .file-upload-label i {
                 font-size: 1.5rem;
+            }
+
+            .gcash-number {
+                font-size: 1.8rem;
+                padding: 0.5rem 1rem;
+                min-width: 200px;
+            }
+
+            .gcash-title {
+                font-size: 1.3rem;
             }
         }
     </style>
@@ -1073,6 +1195,23 @@
                     </div>
                     <h1>Add Money</h1>
                     <p>Top up your e-wallet to start printing documents</p>
+                </div>
+            </div>
+
+            <!-- GCash Payment Information Section -->
+            <div class="gcash-info-section">
+                <div class="gcash-info-content">
+                    <div class="gcash-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="gcash-title">Send Money to GCash</div>
+                    <div class="gcash-number">0967 773 3276</div>
+                    <div class="gcash-instruction">
+                        Send your payment to the number above and upload the screenshot below
+                    </div>
+                    <div class="gcash-warning">
+                        ⚠️ Make sure to send the EXACT amount and take a clear screenshot of your transaction
+                    </div>
                 </div>
             </div>
 
