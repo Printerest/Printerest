@@ -10,7 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
-    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, set, get, child, push, orderByChild, query, equalTo } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
@@ -1073,12 +1072,10 @@
     </style>
 </head>
 <body>
-    <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" id="mobileMenuBtn">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <a href="2) Dashboard.html" class="sidebar-logo">
@@ -1126,7 +1123,6 @@
         </nav>
 
         <div class="sidebar-user">
-            <!-- E-wallet Display -->
             <div class="wallet-display">
                 <div class="wallet-title">
                     <i class="fas fa-wallet"></i>
@@ -1143,7 +1139,6 @@
                 </div>
             </div>
 
-            <!-- Logout Button -->
             <button class="logout-btn" id="logoutBtn">
                 <i class="fas fa-sign-out-alt"></i>
                 <span class="logout-btn-text">Logout</span>
@@ -1151,19 +1146,15 @@
         </div>
     </div>
 
-    <!-- Sidebar Overlay for mobile -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- API Status Indicator -->
     <div class="api-status" id="apiStatus" style="display: none;">
         <i class="fas fa-circle"></i>
         <span>Google Drive API Status</span>
     </div>
 
-    <!-- Logout Confirmation Modal -->
     <div class="modal-overlay" id="logoutModal">
         <div class="modal logout-modal">
             <div class="logout-modal-icon">
@@ -1184,10 +1175,8 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="content-wrapper">
-            <!-- Page Header -->
             <div class="page-header">
                 <div class="page-header-content">
                     <div class="page-header-icon">
@@ -1198,14 +1187,13 @@
                 </div>
             </div>
 
-            <!-- GCash Payment Information Section -->
             <div class="gcash-info-section">
                 <div class="gcash-info-content">
                     <div class="gcash-icon">
                         <i class="fas fa-mobile-alt"></i>
                     </div>
                     <div class="gcash-title">Send Money to GCash</div>
-                    <div class="gcash-number">0967 773 3276</div>
+                    <div class="gcash-number" id="gcashNumber">Loading...</div>
                     <div class="gcash-instruction">
                         Send your payment to the number above and upload the screenshot below
                     </div>
@@ -1215,7 +1203,6 @@
                 </div>
             </div>
 
-            <!-- Add Money Form -->
             <div class="add-money-section">
                 <h2 class="section-title">
                     <i class="fas fa-plus-circle"></i>
@@ -1258,7 +1245,6 @@
                 </form>
             </div>
 
-            <!-- Transaction History -->
             <div class="transaction-history">
                 <h2 class="section-title">
                     <i class="fas fa-history"></i>
@@ -1277,8 +1263,7 @@
                             </tr>
                         </thead>
                         <tbody id="transactionTableBody">
-                            <!-- Transactions will be loaded here -->
-                        </tbody>
+                            </tbody>
                     </table>
                 </div>
 
@@ -1291,7 +1276,6 @@
         </div>
     </div>
 
-    <!-- Google Identity Services -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
     <script>
@@ -1327,7 +1311,34 @@
             setupFileUpload();
             loadTransactionHistory();
             initializeGoogleAPI();
+            loadGcashNumber(); // New function call
         });
+
+        // NEW FUNCTION TO FETCH GCASH NUMBER FROM FIREBASE
+        async function loadGcashNumber() {
+            try {
+                const gcashRef = window.firebaseRef(window.firebaseDB, 'GcashNumber');
+                const snapshot = await window.firebaseGet(gcashRef);
+                const gcashNumberElement = document.getElementById('gcashNumber');
+
+                if (snapshot.exists()) {
+                    const gcashData = snapshot.val();
+                    if (gcashData && gcashData.number) {
+                        gcashNumberElement.textContent = gcashData.number;
+                    } else {
+                        gcashNumberElement.textContent = 'Number not found';
+                        console.warn('Gcash number node exists but "number" field is missing.');
+                    }
+                } else {
+                    gcashNumberElement.textContent = 'Number not found';
+                    console.error('GcashNumber node does not exist in Firebase.');
+                }
+            } catch (error) {
+                console.error('Error fetching GCash number from Firebase:', error);
+                document.getElementById('gcashNumber').textContent = 'Error loading number';
+                showToast('Failed to load GCash number.', 'error');
+            }
+        }
 
         // Initialize Google API with new Identity Services
         async function initializeGoogleAPI() {
