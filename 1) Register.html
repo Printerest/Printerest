@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -509,7 +508,7 @@
                     <label for="email">Email Address</label>
                     <div class="input-wrapper">
                         <i class="fas fa-envelope input-icon"></i>
-                        <input type="email" id="email" name="email" required placeholder="your.email@student.edu">
+                        <input type="email" id="email" name="email" required placeholder="your.email@example.com">
                     </div>
                 </div>
 
@@ -520,9 +519,6 @@
                         <input type="date" id="birthday" name="birthday" required>
                     </div>
                 </div>
-
-
-          
 
                 <div class="form-group">
                     <label for="password">Password</label>
@@ -756,27 +752,6 @@
             }
         }
 
-        // Check if student ID already exists
-        async function checkStudentIdExists(studentId) {
-            try {
-                const dbRef = window.firebaseRef(window.firebaseDB);
-                const snapshot = await window.firebaseGet(window.firebaseChild(dbRef, 'users'));
-                
-                if (snapshot.exists()) {
-                    const users = snapshot.val();
-                    for (let userId in users) {
-                        if (users[userId].studentId === studentId) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            } catch (error) {
-                console.error('Error checking student ID:', error);
-                return false;
-            }
-        }
-
         // Calculate age from birthday
         function calculateAge(birthday) {
             const today = new Date();
@@ -816,8 +791,6 @@
                 lastName: formData.get('lastName'),
                 email: formData.get('email'),
                 birthday: formData.get('birthday'),
-                studentId: formData.get('studentId'),
-                course: formData.get('course'),
                 password: formData.get('password'),
                 confirmPassword: formData.get('confirmPassword'),
                 terms: formData.get('terms') ? true : false
@@ -843,12 +816,6 @@
                     throw new Error('Email address already registered');
                 }
 
-                // Check if student ID already exists
-                const studentIdExists = await checkStudentIdExists(data.studentId);
-                if (studentIdExists) {
-                    throw new Error('Student ID already registered');
-                }
-
                 // Generate next user ID
                 const userId = await getNextUserId();
                 
@@ -867,8 +834,6 @@
                     email: data.email,
                     birthday: data.birthday,
                     age: age,
-                    studentId: data.studentId,
-                    course: data.course,
                     password: data.password, // In production, you should hash this
                     registrationDate: registrationTimestamp,
                     registrationTimestamp: registrationTimestamp, // Keep both for compatibility
@@ -921,9 +886,9 @@
         }
 
         function validateForm(data) {
-            // Check required fields
+            // Check required fields - removed studentId and course
             if (!data.firstName || !data.lastName || !data.email || !data.birthday || 
-                !data.studentId || !data.course || !data.password || !data.confirmPassword) {
+                !data.password || !data.confirmPassword) {
                 showToast('Please fill in all required fields', 'error');
                 return false;
             }
@@ -944,12 +909,6 @@
             const age = calculateAge(data.birthday);
             if (age < 13) {
                 showToast('You must be at least 13 years old to register', 'error');
-                return false;
-            }
-
-            // Validate student ID format
-            if (!isValidStudentId(data.studentId)) {
-                showToast('Please enter a valid student ID (e.g., 2024-12345)', 'error');
                 return false;
             }
 
@@ -997,12 +956,6 @@
             if (birthDate < minDate) return false;
             
             return true;
-        }
-
-        function isValidStudentId(studentId) {
-            // Simple validation for student ID format (year-number)
-            const studentIdRegex = /^\d{4}-\d{4,6}$/;
-            return studentIdRegex.test(studentId);
         }
 
         function showToast(message, type = 'success') {
